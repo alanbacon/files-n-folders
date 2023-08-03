@@ -1,4 +1,4 @@
-import { IPathString, PathString } from "..";
+import { PathString, IPathString } from "../pathString/pathString";
 
 export class Filenames extends Array<IPathString> {
   private static compareFunc(a: IPathString, b: IPathString): number {

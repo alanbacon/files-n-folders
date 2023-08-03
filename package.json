@@ -3,7 +3,8 @@
   "type": "module",
   "version": "0.0.1",
   "description": "library for working with system files and folders",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest ./__test",
     "build": "tsc -p tsconfig.json"

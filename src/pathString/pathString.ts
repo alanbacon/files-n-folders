@@ -1,7 +1,27 @@
-import { IPathString, IFileStat } from "./pathString.d";
 import { getDigitGroups } from "./digitGroup";
 import * as path from "path";
 import * as fs from "fs";
+
+export interface IPathString extends String {
+  path: string;
+  filename: string;
+  extention: string;
+  pathAsList: string[];
+  isPathStyle: boolean;
+  exists: () => Promise<boolean>;
+  isFile: () => Promise<boolean>;
+  isDirectory: () => Promise<boolean>;
+  getPathRelativeTo: (other: IPathString) => IPathString;
+  _lt_: (other: IPathString) => boolean;
+  _prepLt: () => void;
+  _digitGroups: (String | number)[][];
+}
+
+export interface IFileStat {
+  isDirectory: () => boolean;
+  isFile: () => boolean;
+  isSymbolicLink: () => boolean;
+}
 
 export class PathString extends String implements IPathString {
   path: string;
@@ -112,7 +132,7 @@ export class PathString extends String implements IPathString {
         otherPathAsListWithoutEmptyFilename.shift(); // remove first element
       } else if (i == 0) {
         throw new Error(
-          "relative paths can only be calculated from paths with a common root",
+          "relative paths can only be calculated from paths with a common root"
         );
       } else {
         break;
@@ -134,14 +154,14 @@ export class PathString extends String implements IPathString {
 
     return new PathString(
       newRelativePathList.join(path.sep),
-      this._stat || undefined,
+      this._stat || undefined
     );
   }
 
   _prepLt() {
     if (!this._digitGroups) {
       this._digitGroups = this.pathAsList.map((p) =>
-        getDigitGroups(p.toLowerCase()),
+        getDigitGroups(p.toLowerCase())
       );
 
       if (!this.isPathStyle) {

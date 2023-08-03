@@ -1,13 +1,22 @@
 import * as path from "path";
 import { Dirent, promises as fs } from "fs";
-import { IListingOptions } from "./listings.d";
-import { IPathString, PathString } from ".";
-import { Filenames } from ".";
+import { PathString, IPathString } from "../pathString/pathString";
+import { Filenames } from "..";
+
+export interface IListingOptions {
+  recursive?: boolean;
+  fullPath?: boolean;
+  relativePath?: boolean;
+  extentions?: string[];
+  excludeSystemFiles?: boolean;
+  includePatterns?: RegExp[];
+  excludePatterns?: RegExp[];
+}
 
 function includePathInListing(
   ps: IPathString,
   options: IListingOptions,
-  isFile: boolean,
+  isFile: boolean
 ): boolean {
   let extentionOK = true;
   if (isFile && options.extentions && options.extentions.length) {
@@ -22,7 +31,7 @@ function includePathInListing(
   let includePatternOK = true;
   if (options.includePatterns && options.includePatterns.length) {
     includePatternOK = options.includePatterns.some((incPat) =>
-      incPat.test(ps.toString()),
+      incPat.test(ps.toString())
     );
   }
 
@@ -41,7 +50,7 @@ function excludePathFromListing(ps: IPathString, options: IListingOptions) {
   let excludePattern = false;
   if (options.excludePatterns && options.excludePatterns.length) {
     excludePattern = options.excludePatterns.some((excPat) =>
-      excPat.test(ps.toString()),
+      excPat.test(ps.toString())
     );
   }
 
@@ -51,7 +60,7 @@ function excludePathFromListing(ps: IPathString, options: IListingOptions) {
 export async function* yieldFiles(
   dir: string,
   options?: IListingOptions,
-  dirent?: Dirent,
+  dirent?: Dirent
 ): AsyncGenerator<IPathString> {
   const defaultOptions = { recursive: false };
   if (!options) {
@@ -91,7 +100,7 @@ export async function* yieldFiles(
 
 export async function listFiles(
   dir: IPathString,
-  options?: IListingOptions,
+  options?: IListingOptions
 ): Promise<Filenames> {
   if (!(await dir.isDirectory())) {
     throw new Error(`${dir.toString()} isn't a directory`);
