@@ -7,7 +7,12 @@ module.exports = {
       "ts-jest",
       {
         diagnostics: false,
+        useESM: true,
       },
     ],
   },
+  moduleNameMapper: {
+    "(.+)\\.js": "$1",
+  },
+  extensionsToTreatAsEsm: [".ts"],
 };
