@@ -1,4 +1,4 @@
-import { getDigitGroups } from "./digitGroup";
+import { getDigitGroups } from "./digitGroup.js";
 import * as path from "path";
 import * as fs from "fs";
 

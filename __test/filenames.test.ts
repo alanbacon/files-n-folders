@@ -1,5 +1,5 @@
 import { describe, expect, it } from "@jest/globals";
-import { PathString, Filenames } from "../src";
+import { PathString, Filenames } from "../src/index.js";
 
 describe("PathString", () => {
   it("should sort filenames", () => {

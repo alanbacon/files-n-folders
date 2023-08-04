@@ -1,5 +1,5 @@
 import { describe, expect, it } from "@jest/globals";
-import { getDigitGroups } from "../src/pathString/digitGroup";
+import { getDigitGroups } from "../src/pathString/digitGroup.js";
 
 describe("DigitGroups", () => {
   it("should split strings that start and end in digits", () => {

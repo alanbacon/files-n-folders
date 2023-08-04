@@ -1,7 +1,7 @@
 import * as path from "path";
 import { Dirent, promises as fs } from "fs";
-import { PathString, IPathString } from "../pathString/pathString";
-import { Filenames } from "..";
+import { PathString, IPathString } from "../pathString/pathString.js";
+import { Filenames } from "../filenames/filenames.js";
 
 export interface IListingOptions {
   recursive?: boolean;
