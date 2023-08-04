@@ -1,7 +1,7 @@
 {
   "name": "files-n-folders",
   "type": "module",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "library for working with system files and folders",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,7 +9,7 @@
     "test": "jest ./__test",
     "build": "tsc -p tsconfig.json"
   },
-  "author": "",
+  "author": "ALan Bacon",
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^29.5.3",
