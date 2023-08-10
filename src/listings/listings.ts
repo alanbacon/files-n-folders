@@ -37,7 +37,11 @@ function includePathInListing(
     );
   }
 
-  return extentionOK && includePatternOK;
+  const includeDirectoryOK = !isFile && !options.excludeDirectories;
+  const includeFilesOK = isFile && !options.excludeFiles;
+  const includeTypeOK = includeDirectoryOK || includeFilesOK;
+
+  return extentionOK && includePatternOK && includeTypeOK;
 }
 
 // exclude takes precedent, even if there is an included pattern. E.g. path strings that
@@ -74,11 +78,7 @@ export async function* yieldFiles(
   }
 
   const dirPs = new PathString(path.resolve(dir) + path.sep, dirent);
-  if (
-    options.recursive &&
-    includePathInListing(dirPs, options, false) &&
-    !options.excludeDirectories
-  ) {
+  if (options.recursive && includePathInListing(dirPs, options, false)) {
     yield dirPs;
   }
 
@@ -95,8 +95,16 @@ export async function* yieldFiles(
     if (!excludePathFromListing(ps, options)) {
       if (dirent.isDirectory() && options.recursive) {
         yield* yieldFiles(p, options, dirent);
+      } else if (dirent.isDirectory()) {
+        if (includePathInListing(ps, options, false)) {
+          if (options.fullPath) {
+            yield new PathString(ps + path.sep, dirent);
+          } else {
+            yield ps;
+          }
+        }
       } else {
-        if (includePathInListing(ps, options, true) && !options.excludeFiles) {
+        if (includePathInListing(ps, options, true)) {
           yield ps;
         }
       }

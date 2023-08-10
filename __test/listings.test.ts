@@ -37,6 +37,19 @@ describe("PathString", () => {
     compareExpectedPaths(filenames, expected);
   });
 
+  it("should get subdirectories", async () => {
+    const expected = ["./.systemFolder/", "./regularFolderLevel1/"];
+
+    const filenames = await listFiles(new PathString(TEST_FOLDER), {
+      fullPath: true,
+      relativePath: true,
+      excludeFiles: true,
+    });
+    filenames.sort();
+
+    compareExpectedPaths(filenames, expected);
+  });
+
   it("should get file and folder recursively", async () => {
     const expected = [
       "./",
