@@ -11,6 +11,8 @@ export interface IListingOptions {
   excludeSystemFiles?: boolean;
   includePatterns?: RegExp[];
   excludePatterns?: RegExp[];
+  excludeDirectories?: boolean;
+  excludeFiles?: boolean;
 }
 
 function includePathInListing(
@@ -72,7 +74,11 @@ export async function* yieldFiles(
   }
 
   const dirPs = new PathString(path.resolve(dir) + path.sep, dirent);
-  if (options.recursive && includePathInListing(dirPs, options, false)) {
+  if (
+    options.recursive &&
+    includePathInListing(dirPs, options, false) &&
+    !options.excludeDirectories
+  ) {
     yield dirPs;
   }
 
@@ -90,7 +96,7 @@ export async function* yieldFiles(
       if (dirent.isDirectory() && options.recursive) {
         yield* yieldFiles(p, options, dirent);
       } else {
-        if (includePathInListing(ps, options, true)) {
+        if (includePathInListing(ps, options, true) && !options.excludeFiles) {
           yield ps;
         }
       }

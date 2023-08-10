@@ -189,4 +189,45 @@ describe("PathString", () => {
 
     compareExpectedPaths(filenames, expected);
   });
+
+  it("should get file and folder recursively - excluding files", async () => {
+    const expected = [
+      "./",
+      "./.systemFolder/",
+      "./regularFolderLevel1/",
+      "./regularFolderLevel1/regularFolderLevel2/",
+    ];
+
+    const filenames = await listFiles(new PathString(TEST_FOLDER), {
+      recursive: true,
+      relativePath: true,
+      excludeFiles: true,
+    });
+    filenames.sort();
+
+    compareExpectedPaths(filenames, expected);
+  });
+
+  it("should get file and folder recursively excluding folders", async () => {
+    const expected = [
+      "./.systemFile",
+      "./.systemFolder/fileInSystemFolder",
+      "./.systemFolder/somethingElse",
+      "./file1Level0.ext",
+      "./regularFolderLevel1/file1Level1.ext",
+      "./regularFolderLevel1/file2Level1.ext2",
+      "./regularFolderLevel1/regularFolderLevel2/differentName.ext",
+      "./regularFolderLevel1/regularFolderLevel2/file1Level2.ext3",
+      "./regularFolderLevel1/regularFolderLevel2/file2Level2.ext4",
+    ];
+
+    const filenames = await listFiles(new PathString(TEST_FOLDER), {
+      recursive: true,
+      relativePath: true,
+      excludeDirectories: true,
+    });
+    filenames.sort();
+
+    compareExpectedPaths(filenames, expected);
+  });
 });

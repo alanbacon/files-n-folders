@@ -1,7 +1,7 @@
 {
   "name": "files-n-folders",
   "type": "module",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "library for working with system files and folders",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
