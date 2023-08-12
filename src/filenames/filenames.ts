@@ -16,7 +16,9 @@ export class Filenames extends Array<IPathString> {
     }
   }
 
-  sort(compareFunction?: (a: IPathString, b: IPathString) => number): this {
+  sortFilenames(
+    compareFunction?: (a: IPathString, b: IPathString) => number
+  ): this {
     let compFunc = Filenames.compareFunc;
     if (compareFunction) {
       compFunc = compareFunction;

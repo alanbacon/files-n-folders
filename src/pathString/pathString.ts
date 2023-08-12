@@ -6,15 +6,18 @@ export interface IPathString extends String {
   path: string;
   filename: string;
   extention: string;
+  directoryName: string;
   pathAsList: string[];
   isPathStyle: boolean;
-  exists: () => Promise<boolean>;
-  isFile: () => Promise<boolean>;
-  isDirectory: () => Promise<boolean>;
+  exists: () => boolean;
+  isFile: () => boolean;
+  isDirectory: () => boolean;
   getPathRelativeTo: (other: IPathString) => IPathString;
+  appendPath: (other: IPathString) => IPathString;
   _lt_: (other: IPathString) => boolean;
   _prepLt: () => void;
   _digitGroups: (String | number)[][];
+  _stat: IFileStat | undefined | null;
 }
 
 export interface IFileStat {
@@ -27,9 +30,10 @@ export class PathString extends String implements IPathString {
   path: string;
   filename: string;
   extention: string;
+  directoryName: string;
   pathAsList: string[];
   isPathStyle: boolean;
-  private _stat: IFileStat | undefined | null;
+  _stat: IFileStat | undefined | null;
   _digitGroups: (String | number)[][];
 
   constructor(str: string | IPathString, dirent?: fs.Dirent | IFileStat) {
@@ -67,6 +71,12 @@ export class PathString extends String implements IPathString {
       this.extention = "";
     }
 
+    if (this.pathAsList.length > 1) {
+      this.directoryName = this.pathAsList.slice(-2)[0];
+    } else {
+      this.directoryName = "";
+    }
+
     this._stat = undefined;
   }
 
@@ -85,25 +95,33 @@ export class PathString extends String implements IPathString {
     }
   }
 
-  async exists(): Promise<boolean> {
-    await this.getStat();
+  exists(): boolean {
+    this.getStat();
     return !!this._stat;
   }
 
-  async isDirectory(): Promise<boolean> {
-    if (!(await this.exists())) {
+  isDirectory(): boolean {
+    if (!this.exists()) {
       return false;
     }
 
     return this._stat!.isDirectory();
   }
 
-  async isFile(): Promise<boolean> {
-    if (!(await this.exists())) {
+  isFile(): boolean {
+    if (!this.exists()) {
       return false;
     }
 
     return this._stat!.isFile();
+  }
+
+  appendPath(otherPathString: IPathString): IPathString {
+    let newPath = path.resolve(this.toString(), otherPathString.toString());
+    if (otherPathString.isPathStyle) {
+      newPath = newPath + path.sep;
+    }
+    return new PathString(newPath, otherPathString._stat || undefined);
   }
 
   getPathRelativeTo(otherPathString: IPathString): IPathString {

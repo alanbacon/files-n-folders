@@ -116,7 +116,7 @@ export async function listFiles(
   dir: IPathString,
   options?: IListingOptions
 ): Promise<Filenames> {
-  if (!(await dir.isDirectory())) {
+  if (!dir.isDirectory()) {
     throw new Error(`${dir.toString()} isn't a directory`);
   }
 

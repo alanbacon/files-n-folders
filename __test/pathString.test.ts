@@ -8,6 +8,7 @@ describe("PathString", () => {
     expect(ps.path).toEqual("/path/to/");
     expect(ps.filename).toEqual("file");
     expect(ps.extention).toEqual("ext");
+    expect(ps.directoryName).toEqual("to");
     expect(ps.toString()).toEqual("/path/to/file.ext");
   });
 
@@ -17,6 +18,7 @@ describe("PathString", () => {
     expect(ps.path).toEqual("/path/to.path/");
     expect(ps.filename).toEqual("");
     expect(ps.extention).toEqual("");
+    expect(ps.directoryName).toEqual("to.path");
   });
 
   it("should return no extention", () => {
@@ -25,6 +27,7 @@ describe("PathString", () => {
     expect(ps.path).toEqual("/path/to/");
     expect(ps.filename).toEqual("filename");
     expect(ps.extention).toEqual("");
+    expect(ps.directoryName).toEqual("to");
   });
 
   it("should return no file but an extention", () => {
@@ -33,6 +36,7 @@ describe("PathString", () => {
     expect(ps.path).toEqual("/path/to/");
     expect(ps.filename).toEqual("");
     expect(ps.extention).toEqual("bashrc");
+    expect(ps.directoryName).toEqual("to");
   });
 
   it("should return no filename with a dot", () => {
@@ -41,46 +45,49 @@ describe("PathString", () => {
     expect(ps.path).toEqual("/path/to/");
     expect(ps.filename).toEqual(".inactive");
     expect(ps.extention).toEqual("bashrc");
+    expect(ps.directoryName).toEqual("to");
   });
 
   it("should return no path", () => {
     const ps = new PathString("file.ext");
     expect(ps.isPathStyle).toEqual(false);
     expect(ps.path).toEqual("");
+    expect(ps.directoryName).toEqual("");
   });
 
   it("should return root path", () => {
     const ps = new PathString("/file.ext");
     expect(ps.isPathStyle).toEqual(false);
     expect(ps.path).toEqual("/");
+    expect(ps.directoryName).toEqual("");
   });
 
-  it("should return exists as false", async () => {
+  it("should return exists as false", () => {
     const ps = new PathString("/noexist.ext");
-    expect(await ps.exists()).toEqual(false);
+    expect(ps.exists()).toEqual(false);
   });
 
-  it("should return exists as true", async () => {
+  it("should return exists as true", () => {
     const ps = new PathString(`${__dirname}/pathString.test.ts`);
-    expect(await ps.exists()).toEqual(true);
+    expect(ps.exists()).toEqual(true);
   });
 
-  it("should return isFile as true", async () => {
+  it("should return isFile as true", () => {
     const ps = new PathString(`${__dirname}/pathString.test.ts`);
-    expect(await ps.isFile()).toEqual(true);
-    expect(await ps.isDirectory()).toEqual(false);
+    expect(ps.isFile()).toEqual(true);
+    expect(ps.isDirectory()).toEqual(false);
   });
 
-  it("should return isDir as true", async () => {
+  it("should return isDir as true", () => {
     const ps = new PathString(`${__dirname}`);
-    expect(await ps.isFile()).toEqual(false);
-    expect(await ps.isDirectory()).toEqual(true);
+    expect(ps.isFile()).toEqual(false);
+    expect(ps.isDirectory()).toEqual(true);
   });
 
-  it("should return isDir and isFile as false if not exist", async () => {
+  it("should return isDir and isFile as false if not exist", () => {
     const ps = new PathString(`/noexist`);
-    expect(await ps.isFile()).toEqual(false);
-    expect(await ps.isDirectory()).toEqual(false);
+    expect(ps.isFile()).toEqual(false);
+    expect(ps.isDirectory()).toEqual(false);
   });
 
   describe("relative path", () => {
@@ -158,6 +165,29 @@ describe("PathString", () => {
       const self = new PathString("/path/to/filename.ext");
       const other = new PathString("/path/to/filename (1).ext");
       expect(self._lt_(other)).toBe(true);
+    });
+  });
+
+  describe("appendPath", () => {
+    it("should append paths and files", () => {
+      const self = new PathString("/path/to/");
+      const other = new PathString("./anotherPath/filename.ext");
+      const joined = self.appendPath(other);
+      expect(joined.toString()).toEqual("/path/to/anotherPath/filename.ext");
+    });
+
+    it("should append paths", () => {
+      const self = new PathString("/path/to/");
+      const other = new PathString("./anotherPath/");
+      const joined = self.appendPath(other);
+      expect(joined.toString()).toEqual("/path/to/anotherPath/");
+    });
+
+    it("should append remove double dots", () => {
+      const self = new PathString("/path/to/");
+      const other = new PathString("../anotherPath/");
+      const joined = self.appendPath(other);
+      expect(joined.toString()).toEqual("/path/anotherPath/");
     });
   });
 });

@@ -8,7 +8,7 @@ describe("PathString", () => {
     const ps3 = new PathString("/path/to/filename (1).ext");
     const ps4 = new PathString("/path/to/filename.ext");
     const filenames = new Filenames(ps1, ps2, ps3, ps4);
-    const sortedFilenames = filenames.sort();
+    const sortedFilenames = filenames.sortFilenames();
     for (let i = 0; i++; i < 4) {
       expect(sortedFilenames[i]).toEqual(filenames[i]);
     }
