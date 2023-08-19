@@ -1,6 +1,7 @@
 import { getDigitGroups } from "./digitGroup.js";
 import * as path from "path";
 import * as fs from "fs";
+import { mkdirp } from "mkdirp";
 
 export interface IPathString extends String {
   path: string;
@@ -14,6 +15,8 @@ export interface IPathString extends String {
   isDirectory: () => boolean;
   getPathRelativeTo: (other: IPathString) => IPathString;
   appendPath: (other: IPathString) => IPathString;
+  getParentFolder: () => IPathString;
+  create: () => Promise<void>;
   _lt_: (other: IPathString) => boolean;
   _prepLt: () => void;
   _digitGroups: (String | number)[][];
@@ -174,6 +177,21 @@ export class PathString extends String implements IPathString {
       newRelativePathList.join(path.sep),
       this._stat || undefined
     );
+  }
+
+  getParentFolder() {
+    const closeSliceIndex = this.isPathStyle ? -2 : -1;
+    const newPathAsList = [...this.pathAsList.slice(0, closeSliceIndex), ""];
+    const newPath = newPathAsList.join(path.sep);
+    return new PathString(newPath);
+  }
+
+  async create() {
+    if (!this.isPathStyle) {
+      throw new Error("not implemented: can only create directories");
+    }
+
+    await mkdirp(this.toString());
   }
 
   _prepLt() {

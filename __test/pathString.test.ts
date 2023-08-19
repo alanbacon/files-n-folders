@@ -85,9 +85,21 @@ describe("PathString", () => {
   });
 
   it("should return isDir and isFile as false if not exist", () => {
-    const ps = new PathString(`/noexist`);
+    const ps = new PathString("/noexist");
     expect(ps.isFile()).toEqual(false);
     expect(ps.isDirectory()).toEqual(false);
+  });
+
+  describe("getParentFolder", () => {
+    it("should get the parent folder of a file", () => {
+      const ps = new PathString("/path/to/filename");
+      expect(ps.getParentFolder().toString()).toEqual("/path/to/");
+    });
+
+    it("should get the parent folder of a folder", () => {
+      const ps = new PathString("/path/to/");
+      expect(ps.getParentFolder().toString()).toEqual("/path/");
+    });
   });
 
   describe("relative path", () => {
